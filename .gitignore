@@ -1,0 +1,13 @@
+/solutions
+/results
+/_backup
+__pycache__/
+/test_results
+/dataset
+/m4_results
+/checkpoints
+/deltas
+/classify
+*.png
+*.xlsx
+*.npy

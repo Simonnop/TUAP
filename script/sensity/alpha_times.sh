@@ -1,0 +1,61 @@
+#!/bin/bash
+# 灵敏度分析: alpha_times (仅多步攻击)
+
+export CUDA_VISIBLE_DEVICES=1
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+cd "$PROJECT_ROOT" || exit 1
+source "$SCRIPT_DIR/_config.sh"
+
+alpha_times_list=(1 2 3 4 5)
+seq_len=$base_L
+pred_len=$base_H
+label_len=48
+e_layers=2
+d_layers=1
+factor=3
+features="M"
+itr=1
+record_name="sensi_alpha_times"
+
+for dataset in "${datasets[@]}"; do
+    get_dataset_config "$dataset" || continue
+
+    for generate_model in "${generate_models[@]}"; do
+    for victim_model in "${victim_models[@]}"; do
+        for attack_algo in "${attacks_multi_step[@]}"; do
+            for alpha_times in "${alpha_times_list[@]}"; do
+                python -u run.py \
+                    --task_name attack \
+                    --is_training 0 \
+                    --root_path "$root_path" \
+                    --data_path "$data_path" \
+                    --model_id ${model_id_prefix}_${seq_len}_${pred_len} \
+                    --generate_model $generate_model \
+                    --victim_model $victim_model \
+                    --epsilon $base_epsilon \
+                    --alpha_times $alpha_times \
+                    --epoch $base_epoch \
+                    --data $data_name \
+                    --attack_algo $attack_algo \
+                    --features $features \
+                    --seq_len $seq_len \
+                    --label_len $label_len \
+                    --pred_len $pred_len \
+                    --e_layers $e_layers \
+                    --d_layers $d_layers \
+                    --factor $factor \
+                    --enc_in $enc_in \
+                    --dec_in $dec_in \
+                    --c_out $c_out \
+                    --seg_len $seg_len \
+                    --use_gpu 1 \
+                    --des 'Exp' \
+                    --itr $itr \
+                    --record_name $record_name
+            done
+        done
+    done
+    done
+done

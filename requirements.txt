@@ -1,0 +1,17 @@
+einops==0.8.0
+local-attention==1.9.15
+matplotlib==3.9.2
+numpy==1.26.4
+pandas==2.1.4
+patool
+# ray==2.37.0
+reformer-pytorch==1.4.4
+scikit-learn==1.5.1
+scipy==1.13.1
+sktime==0.34.0
+sympy==1.13.1
+torch==2.3.0
+tqdm==4.66.5
+mealpy==3.0.1
+PyWavelets
+bayesian-optimization==1.4.3
